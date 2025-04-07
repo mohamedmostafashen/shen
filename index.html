@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>كازينو الألعاب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oi&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #002366;
+      color: white;
+      text-align: center;
+      direction: rtl;
+      font-family: 'Lalezar', cursive;
+      position: relative;
+      padding-top: 30px;
+    }
+    .logo {
+      max-width: 250px;
+      margin: 20px auto;
+    }
+    .question-box {
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #003399;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      max-width: 800px;
+    }
+    .question {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #ffd700;
+      letter-spacing: 5px;
+    }
+    .answer {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    .nav-buttons button {
+      margin: 10px;
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+    .logo {
+      max-width: 250px;
+      margin: 20px auto;
+    }
+    .player {
+      border: 2px solid #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 10px;
+      background-color: #003399;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+    .score {
+      font-size: 48px;
+      margin: 20px 0;
+      color: #ffd700;
+    }
+    /* تعديل أزرار + و - */
+    .btn-custom {
+      font-size: 24px;
+      width: 60px;
+      height: 60px;
+      margin: 5px;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-plus {
+      background: linear-gradient(45deg, #28a745, #5cd65c);
+    }
+    .btn-minus {
+      background: linear-gradient(45deg, #dc3545, #ff6b6b);
+    }
+    .btn-custom::before {
+      content: '';
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(45deg) translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      pointer-events: none;
+      transition: 0.5s;
+    }
+    .btn-custom:hover::before {
+      transform: rotate(45deg) translate(-50%, -50%) scale(1.2);
+    }
+    .btn-custom:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+    }
+    .btn-custom:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .name-input {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #fff;
+      color: #fff;
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .name-input::placeholder {
+      color: #ccc;
+    }
+    #winnerMessage {
+  position: fixed;
+  top: 20%;  /* قمنا بتعديل الـ top لتكون أعلى قليلاً عن المنتصف */
+  left: 50%;
+  transform: translateX(-50%); /* لضمان التمركز التام أفقيًا */
+  background: #002366; /* نفس لون خلفية الموقع */
+  color: gold;
+  font-size: 32px; /* تصغير الحجم ليكون مناسبًا مع العناصر الأخرى */
+  padding: 20px 40px; /* إضافة بعض المسافة حول النص */
+  border-radius: 15px; /* لتنعيم الحواف */
+  z-index: 9999; /* وضع الرسالة فوق كل العناصر الأخرى */
+  display: none; /* إخفاء الرسالة بشكل افتراضي */
+  text-align: center;
+  pointer-events: none; /* تعطيل التفاعل مع العناصر الأخرى */
+}
+
+#winnerMessage.active {
+  display: block; /* إظهار الرسالة عند تفعيلها */
+  pointer-events: all; /* تفعيل التفاعل مع الرسالة فقط */
+}
+
+.category-selector {
+  margin: 15px auto;
+  padding: 10px;
+  background-color: #003399;
+  border-radius: 10px;
+  max-width: 800px;
+}
+
+.category-btn {
+  margin: 5px;
+  font-size: 16px;
+  padding: 8px 15px;
+  background-color: #ffd700;
+  color: #002366;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+  background-color: #ffc107;
+  transform: translateY(-2px);
+}
+
+.category-btn.active {
+  background-color: #dc3545;
+  color: white;
+}
+
+    /* تعديل استجابة التصميم لأجهزة الهواتف */
+@media (max-width: 768px) {
+  body {
+    padding-top: 20px; /* تقليل الحشو العلوي في الهواتف */
+  }
+
+  .logo {
+    max-width: 200px; /* تقليل عرض الشعار على الأجهزة الصغيرة */
+  }
+
+  .question-box {
+    max-width: 90%; /* جعل الصندوق أكثر مرونة ليشغل مساحة أكبر على الشاشات الصغيرة */
+    padding: 15px;
+  }
+
+  .question {
+    font-size: 28px; /* تقليل حجم الخط للأسئلة في الشاشات الصغيرة */
+    letter-spacing: 3px;
+  }
+
+  .answer {
+    font-size: 20px; /* تقليل حجم الخط للإجابات في الشاشات الصغيرة */
+  }
+
+  .nav-buttons button {
+    font-size: 18px; /* تقليل حجم الأزرار في الشاشات الصغيرة */
+    padding: 8px 16px;
+  }
+
+  .player {
+    padding: 15px; /* تقليل الحشو داخل الكرت */
+    margin: 5px;
+  }
+
+  .score {
+    font-size: 40px; /* تقليل حجم الخط في الشاشات الصغيرة */
+  }
+
+  .btn-custom {
+    font-size: 20px; /* تقليل حجم الأزرار لتتناسب مع حجم الشاشة */
+    width: 50px;
+    height: 50px;
+  }
+
+  .name-input {
+    font-size: 18px; /* تقليل حجم الخط في الخانات */
+    margin-bottom: 8px;
+  }
+
+  #winnerMessage {
+    font-size: 24px; /* تقليل حجم الخط في رسالة الفائز */
+    padding: 20px;
+  }
+  
+  .category-btn {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+
+/* تصميم لعرض أوسع على الأجهزة الكبيرة */
+@media (min-width: 769px) {
+  .logo {
+    max-width: 250px; /* الشعار يكون أكبر قليلاً في الشاشات الكبيرة */
+  }
+
+  .question-box {
+    max-width: 800px; /* الحجم الأصلي للصندوق */
+    padding: 20px;
+  }
+
+  .question {
+    font-size: 32px; /* الحجم الأصلي للأسئلة */
+    letter-spacing: 5px;
+  }
+
+  .answer {
+    font-size: 24px; /* الحجم الأصلي للإجابات */
+  }
+
+  .nav-buttons button {
+    font-size: 20px; /* الحجم الأصلي للأزرار */
+  }
+
+  .player {
+    padding: 20px; /* الحشو الأصلي داخل كرت اللاعب */
+    margin: 10px;
+  }
+
+  .score {
+    font-size: 48px; /* الحجم الأصلي للنقاط */
+  }
+
+  .btn-custom {
+    font-size: 24px; /* الحجم الأصلي للأزرار */
+    width: 60px;
+    height: 60px;
+  }
+
+  .name-input {
+    font-size: 20px; /* الحجم الأصلي لخانة الاسم */
+  }
+
+  #winnerMessage {
+    font-size: 28px; /* الحجم الأصلي لرسالة الفائز */
+    padding: 30px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- صندوق الأسئلة العامة فوق اللوجو -->
+  <img src="https://i.postimg.cc/RFrbqmKt/De-Watermark-ai-1743886622367-removebg-preview.png" alt="كازينو الألعاب" class="logo"/>
+
+  <!-- قسم اختيار الفئة -->
+  <div class="category-selector">
+    <button class="category-btn" onclick="filterQuestions('all')">الكل</button>
+    <button class="category-btn" onclick="filterQuestions('reversed')">الكلمات المعكوسة</button>
+    <button class="category-btn" onclick="filterQuestions('bus')">اتوبيس كومبليت</button>
+    <button class="category-btn" onclick="filterQuestions('general')">أسئلة عامة</button>
+    <button class="category-btn" onclick="filterQuestions('football')">كرة قدم</button>
+    <button class="category-btn" onclick="filterQuestions('drawing')">رسم شخصيات</button>
+    <button class="category-btn" onclick="filterQuestions('movies')">كلمة من فيلم</button>
+    <button class="category-btn" onclick="filterQuestions('songs')">كمل الأغنية</button>
+  </div>
+
+  <!-- صندوق الأسئلة العامة تحت اللوجو -->
+  <div class="question-box">
+    <div class="question" id="question">جارٍ تحميل السؤال...</div>
+    <div class="answer" id="answer"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-warning" onclick="prevQuestion()">السابق</button>
+      <button class="btn btn-success" onclick="nextQuestion()">التالي</button>
+    </div>
+  </div>
+
+  <!-- رسالة الفائز -->
+  <div id="winnerMessage">لقد فاز اللاعب!</div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col player">
+        <input type="text" id="player1" class="name-input" value="اللاعب 1" onchange="updateName(this, 1)">
+        <div class="score" id="score1">0</div>
+        <button class="btn btn-custom btn-plus" onclick="changeScore(1, 1)">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="btn btn-custom btn-minus" onclick="changeScore(1, -1)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+      </div>
+      <div class="col player">
+        <input type="text" id="player2" class="name-input" value="اللاعب 2" onchange="updateName(this, 2)">
+        <div class="score" id="score2">0</div>
+        <button class="btn btn-custom btn-plus" onclick="changeScore(2, 1)">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="btn btn-custom btn-minus" onclick="changeScore(2, -1)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+      </div>
+      <div class="col player">
+        <input type="text" id="player3" class="name-input" value="اللاعب 3" onchange="updateName(this, 3)">
+        <div class="score" id="score3">0</div>
+        <button class="btn btn-custom btn-plus" onclick="changeScore(3, 1)">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+        <button class="btn btn-custom btn-minus" onclick="changeScore(3, -1)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+const questions = [
+  // قسم الكلمات المعكوسة (100 كلمة)
+  {"q": "ي س ي م", "a": "ميسي", "category": "reversed"},
+      {"q": "ل ك ا", "a": "اكل", "category": "reversed"},
+      {"q": "ح ر ف", "a": "فرح", "category": "reversed"},
+      {"q": "ن ي ز ح", "a": "حزين", "category": "reversed"},
+      {"q": "ي ر س", "a": "سري", "category": "reversed"},
+      {"q": "و ي س ي ر و ا م ل ا", "a": "الماوريسيو", "category": "reversed"},
+      {"q": "و ن ي ز ا ك", "a": "كازينو", "category": "reversed"},
+      {"q": "م د ق ل ا ة ر ك", "a": "كرة القدم", "category": "reversed"},
+      {"q": "ة ل س ل ا ة ر ك", "a": "كرة السلة", "category": "reversed"},
+      {"q": "ف ي ش", "a": "شيف", "category": "reversed"},
+      {"q": "خ ا ب ط", "a": "طباخ", "category": "reversed"},
+      {"q": "س ر ج", "a": "جرس", "category": "reversed"},
+      {"q": "د م ح ا", "a": "احمد", "category": "reversed"},
+      {"q": "ن ي س ح", "a": "حسين", "category": "reversed"},
+      {"q": "د ل ا خ", "a": "خالد", "category": "reversed"},
+      {"q": "ل و ب ر ف ي ل", "a": "ليفربول", "category": "reversed"},
+      {"q": "ة ن و ل  ش ر ب", "a": "برشلونة", "category": "reversed"},
+      {"q": "ر ا م ي ن", "a": "نيمار", "category": "reversed"},
+      {"q": "ل ا ي ر ل ا", "a": "الريال", "category": "reversed"},
+      {"q": "د ي ر د م", "a": "مدريد", "category": "reversed"},
+      {"q": "و ك ي ت ي ل ت ا", "a": "اتليتيكو", "category": "reversed"},
+      {"q": "ة ي ز ي ل ج ن ا", "a": "انجليزية", "category": "reversed"},
+      {"q": "ر ح ب", "a": "بحر", "category": "reversed"},
+      {"q": "ئ ط ا ش", "a": "شاطئ", "category": "reversed"},
+      {"q": "م ل ع", "a": "علم", "category": "reversed"},
+      {"q": "ر ص م", "a": "مصر", "category": "reversed"},
+      {"q": "ا ي ك ر ت", "a": "تركيا", "category": "reversed"},
+      {"q": "ن ا د و س ل ا", "a": "السودان", "category": "reversed"},
+      {"q": "ل ا ل ه ل ا", "a": "الهلال", "category": "reversed"},
+      {"q": "ك ل ا م ز ل ا", "a": "الزمالك", "category": "reversed"},
+      {"q": "ن ا ض م ر", "a": "رمضان", "category": "reversed"},
+      {"q": "ل ا و ش", "a": "شوال", "category": "reversed"},
+      {"q": "ي ل ي ع ا م  س ا ل ا", "a": "الاسماعيلي", "category": "reversed"},
+      {"q": "ر ي غ ص", "a": "صغير", "category": "reversed"},
+      {"q": "ي ب ي ل ص  ط ا ب ر", "a": "رباط صليبي", "category": "reversed"},
+      {"q": "ب ع ل م", "a": "ملعب", "category": "reversed"},
+      {"q": "ت ا ب ا ص ا", "a": "اصابات", "category": "reversed"},
+      {"q": "ر ص ا ع م ل ا", "a": "المعاصر", "category": "reversed"},
+      {"q": "ن ا ح ت م ا ل ا", "a": "الامتحان", "category": "reversed"},
+      {"q": "ي ر ص م ل ا", "a": "المصري", "category": "reversed"},
+      {"q": "ش ي و ا ر د ل ا", "a": "الدراويش", "category": "reversed"},
+      {"q": "ة ل ح م ل ا", "a": "المحلة", "category": "reversed"},
+      {"q": "ل ي ز ا ر ب ل ا", "a": "البرازيل", "category": "reversed"},
+      {"q": "ب ر ع ل ا", "a": "العرب", "category": "reversed"},
+      {"q": "ن  ي ت ن ج ر ا ل ا", "a": "الارجنتين", "category": "reversed"},
+      {"q": "و ا ي ل", "a": "لياو", "category": "reversed"},
+      {"q": "ن ا ل ي م", "a": "ميلان", "category": "reversed"},
+      {"q": "ر ت ن ا", "a": "انتر", "category": "reversed"},
+      {"q": "س و ت ن ي ف و ي", "a": "يوفينتوس", "category": "reversed"},
+      {"q": "ا م و ر", "a": "روما", "category": "reversed"},
+      {"q": "ا ب ج و ر ي د", "a": "ديروجبا", "category": "reversed"},
+      {"q": "ف ي ر ح", "a": "حريف", "category": "reversed"},
+      {"q": "م ي ه ف", "a": "فهيم", "category": "reversed"},
+      {"q": "ي م ه ف", "a": "فهمي", "category": "reversed"},
+      {"q": "م ا ل س", "a": "سلام", "category": "reversed"},
+      {"q": "ي ك م", "a": "مكي", "category": "reversed"},
+      {"q": "و ك ا ب", "a": "باكو", "category": "reversed"},
+      {"q": "ي ج ب ب", "a": "ببجي", "category": "reversed"},
+      {"q": "ة ر ك", "a": "كرة", "category": "reversed"},
+      {"q": "ل و ب س ي ب", "a": "بيسبول", "category": "reversed"},
+      {"q": "د ي ل ا ة ر ك", "a": "كرة يد", "category": "reversed"},
+  
+  // قسم اتوبيس كومبليت
+  { q: "حرف ال", a: "ا", category: "bus" },
+  { q: "حرف ال", a: "ب", category: "bus" },
+  { q: "حرف ال", a: "ت", category: "bus" },
+  { q: "حرف ال", a: "ث", category: "bus" },
+  { q: "حرف ال", a: "ج", category: "bus" },
+  { q: "حرف ال", a: "ح", category: "bus" },
+  { q: "حرف ال", a: "خ", category: "bus" },
+  { q: "حرف ال", a: "د", category: "bus" },
+  { q: "حرف ال", a: "ذ", category: "bus" },
+  { q: "حرف ال", a: "ر", category: "bus" },
+  { q: "حرف ال", a: "ز", category: "bus" },
+  { q: "حرف ال", a: "س", category: "bus" },
+  { q: "حرف ال", a: "ش", category: "bus" },
+  { q: "حرف ال", a: "ص", category: "bus" },
+  { q: "حرف ال", a: "ض", category: "bus" },
+  { q: "حرف ال", a: "ط", category: "bus" },
+  { q: "حرف ال", a: "ظ", category: "bus" },
+  { q: "حرف ال", a: "ع", category: "bus" },
+  { q: "حرف ال", a: "غ", category: "bus" },
+  { q: "حرف ال", a: "ف", category: "bus" },
+  { q: "حرف ال", a: "ق", category: "bus" },
+  { q: "حرف ال", a: "ك", category: "bus" },
+  { q: "حرف ال", a: "ل", category: "bus" },
+  { q: "حرف ال", a: "م", category: "bus" },
+  { q: "حرف ال", a: "ن", category: "bus" },
+  { q: "حرف ال", a: "ه", category: "bus" },
+  { q: "حرف ال", a: "و", category: "bus" },
+  { q: "حرف ال", a: "ي", category: "bus" },
+  
+  // قسم الأسئلة العامة
+  { "q": "ما هو أصل الجبن البري (بالإنجليزية: Brie cheese)؟", "a": "من فرنسا.", "category": "general" },
+  { "q": "ما هو أطول نهر في العالم؟", "a": "نهر النيل.", "category": "general" },
+  { "q": "من هو مؤسس شركة مايكروسوفت؟", "a": "بيل جيتس.", "category": "general" },
+  { "q": "ما هي أكبر قارة في العالم من حيث المساحة؟", "a": "آسيا.", "category": "general" },
+  { "q": "ما هو أعلى جبل في العالم؟", "a": "جبل إيفرست.", "category": "general" },
+  { "q": "في أي عام حدث الهجوم على برجي التجارة العالمية في نيويورك؟", "a": "عام 2001.", "category": "general" },
+  { "q": "من هو أول رئيس للولايات المتحدة الأمريكية؟", "a": "جورج واشنطن.", "category": "general" },
+  { "q": "ما هو لون الدم عند الكائنات الحية التي تعتمد على الهيموقيانين؟", "a": "أزرق.", "category": "general" },
+  { "q": "ما هي المادة التي تعتبر أساس الحياة على الأرض؟", "a": "الماء.", "category": "general" },
+  { "q": "من هو كاتب رواية '1984'؟", "a": "جورج أورويل.", "category": "general" },
+  { "q": "أين يقع تمثال الحرية؟", "a": "في مدينة نيويورك، الولايات المتحدة الأمريكية.", "category": "general" },
+  { "q": "ما هو الكوكب الأقرب إلى الشمس؟", "a": "عطارد.", "category": "general" },
+  { "q": "ما هي أطول فترة حكم ملكية في التاريخ؟", "a": "حكم الملكة إليزابيث الثانية.", "category": "general" },
+  { "q": "من هو أول من اكتشف أمريكا؟", "a": "كريستوفر كولومبوس.", "category": "general" },
+  { "q": "ما هو أصل الآيس كريم؟", "a": "من الصين.", "category": "general" },
+  { "q": "ما هو أكبر محيط في العالم؟", "a": "المحيط الهادئ.", "category": "general" },
+  { "q": "ما هو اسم أول حاسوب شخصي؟", "a": "ألتيير 8800.", "category": "general" },
+  { "q": "ما هي اللغة الرسمية في البرازيل؟", "a": "البرتغالية.", "category": "general" },
+  { "q": "من هو صاحب فكرة نظرية النسبية؟", "a": "ألبرت أينشتاين.", "category": "general" },
+  { "q": "ما هي المدينة التي تعرف بمدينة النور؟", "a": "باريس.", "category": "general" },
+  { "q": "ما هو أول كتاب في العالم؟", "a": "الكتاب المقدس.", "category": "general" },
+  { "q": "ما هو اسم أول حديقة حيوان في العالم؟", "a": "حديقة حيوان فيينا.", "category": "general" },
+  { "q": "ما هو أطول جسر في العالم؟", "a": "جسر دانانغ فيتنام.", "category": "general" },
+  { "q": "من هو صاحب اكتشاف قانون الجاذبية؟", "a": "إسحاق نيوتن.", "category": "general" },
+  { "q": "ما هو الكوكب الذي يعرف بكوكب الحلقات؟", "a": "زحل.", "category": "general" },
+  { "q": "ما هي أكبر دولة في العالم من حيث المساحة؟", "a": "روسيا.", "category": "general" },
+  { "q": "ما هي أسرع طائر في العالم؟", "a": "الشاهين.", "category": "general" },
+  { "q": "من هو مؤسس علم النفس؟", "a": "سيغموند فرويد.", "category": "general" },
+  { "q": "ما هي المدينة التي تعرف بمدينة الهرم؟", "a": "الجيزة.", "category": "general" },
+  { "q": "ما هو اسم أول طائرة في العالم؟", "a": "الطائرة الأخف وزناً 'الطائرة الحاملة' 1903", "category": "general" },
+  { "q": "ما هي أكثر الدول سكاناً في العالم؟", "a": "الصين.", "category": "general" },
+  { "q": "ما هو الحيوان الذي يمتلك أطول عمر؟", "a": "البلو هيل في البحر.", "category": "general" },
+  { "q": "من هو صاحب فكرة نظرية الكم؟", "a": "ماكس بلانك.", "category": "general" },
+  { "q": "ما هو اسم أكبر بحيرة في العالم؟", "a": "بحيرة قزوين.", "category": "general" },
+  { "q": "ما هو أول فيلم كرتوني في العالم؟", "a": "فيلم 'Steamboat Willie'.", "category": "general" },
+  { "q": "ما هو أكبر حيوان في العالم؟", "a": "الحوت الأزرق.", "category": "general" },
+  { "q": "ما هو أصل لعبة الشطرنج؟", "a": "من الهند.", "category": "general" },
+  { "q": "من هو أول من دخل الفضاء؟", "a": "يوري جاجارين.", "category": "general" },
+  { "q": "ما هو أكبر حيوان بري في العالم؟", "a": "الفيل الأفريقي.", "category": "general" },
+  { "q": "ما هو عدد القارات في العالم؟", "a": "سبع قارات.", "category": "general" },
+  { "q": "ما هي أكبر مدينة في العالم من حيث عدد السكان؟", "a": "طوكيو، اليابان.", "category": "general" },
+  { "q": "ما هو أول اكتشاف للإنسان للذهب؟", "a": "في مصر القديمة.", "category": "general" },
+  { "q": "ما هو نوع الحرف الذي اخترعه الإغريق في الكتابة؟", "a": "الحروف الأبجدية.", "category": "general" },
+  { "q": "من هو أول من رسم خريطة للعالم؟", "a": "أناكسيمنيس.", "category": "general" },
+  { "q": "ما هي سرعة الضوء؟", "a": "299,792,458 متر في الثانية.", "category": "general" },
+  { "q": "ما هو اسم أغلى مادة على وجه الأرض؟", "a": "السترونشيوم-90.", "category": "general" },
+  { "q": "من هو مخترع المصباح الكهربائي؟", "a": "توماس إديسون.", "category": "general" },
+  { "q": "ما هو اسم أعمق نقطة في المحيطات؟", "a": "خندق ماريانا.", "category": "general" },
+  { "q": "ما هو أطول جدار في العالم؟", "a": "سور الصين العظيم.", "category": "general" },
+  { "q": "ما هو أكثر الكواكب بعدًا عن الشمس؟", "a": "بلوتو.", "category": "general" },
+  { "q": "ما هو اسم أول قمر صناعي في الفضاء؟", "a": "سبوتنيك 1.", "category": "general" },
+  { "q": "ما هو اسم أول لعبة فيديو؟", "a": "Tennis for Two.", "category": "general" },
+  { "q": "ما هو أقوى معدن في العالم؟", "a": "الماس.", "category": "general" },
+  { "q": "ما هو الطائر الذي لا يستطيع الطيران؟", "a": "النعامة.", "category": "general" },
+  { "q": "ما هي الدولة التي تقع بين أوروبا وآسيا؟", "a": "تركيا.", "category": "general" },
+  { "q": "من هو مؤلف رواية 'الأمير الصغير'؟", "a": "أنتوان دو سانت إكزوبيري.", "category": "general" },
+  { "q": "ما هي اللغة الرسمية في اليابان؟", "a": "اليابانية.", "category": "general" },
+  { "q": "ما هو اسم أطول نفق في العالم؟", "a": "نفق غوتهارد Base Tunnel.", "category": "general" },
+  { "q": "ما هو أسرع حيوان على وجه الأرض؟", "a": "الشاهين (صقر الشاهين).", "category": "general" },
+  { "q": "ما هو أول فيلم تم إنتاجه؟", "a": "تروفور 1895.", "category": "general" },
+  { "q": "من هو أول إنسان مشى على سطح القمر؟", "a": "نيل آرمسترونغ.", "category": "general" },
+  { "q": "ما هي المدينة التي تعتبر العاصمة الثقافية لفرنسا؟", "a": "باريس.", "category": "general" },
+  { "q": "ما هو أكبر بركان في العالم؟", "a": "بركان مونا لوا.", "category": "general" },
+  { "q": "من هو أول شخص استكشف القطب الجنوبي؟", "a": "روبرت فالكون سكوت.", "category": "general" },
+  { "q": "ما هو أطول حيوان في العالم؟", "a": "البلطيق (بلطيموس أكبر نوع من قنديل البحر).", "category": "general" },
+  { "q": "ما هو أسرع طائر في العالم؟", "a": "الصقر الشاهين.", "category": "general" },
+  { "q": "ما هو اسم أقدم جامعة في العالم؟", "a": "جامعة القرويين في فاس، المغرب.", "category": "general" },
+  { "q": "ما هو الكوكب الذي يتمتع بأكبر عدد من الأقمار؟", "a": "المشتري.", "category": "general" },
+  { "q": "ما هي أكبر بحيرة في العالم؟", "a": "بحيرة قزوين.", "category": "general" },
+  { "q": "ما هو أقدم بلد مستقل في العالم؟", "a": "السان مارينو.", "category": "general" },
+  { "q": "من هو صاحب نظرية الجاذبية؟", "a": "إسحاق نيوتن.", "category": "general" },
+  { "q": "ما هو أكبر حيوان بري في العالم؟", "a": "الفيل الإفريقي.", "category": "general" },
+  { "q": "ما هو أشهر نوع من الشوكولاتة؟", "a": "شوكولاتة الحليب.", "category": "general" },
+  { "q": "ما هي الدولة التي تُعرف باسم 'بلد الشمس المشرقة'؟", "a": "اليابان.", "category": "general" },
+  { "q": "ما هو عنصر الزنك الذي يعتبر المعدن الوحيد الذي يتم استخراجه من الصخور؟", "a": "البورون.", "category": "general" },
+  { "q": "ما هو أقوى هرمون في جسم الإنسان؟", "a": "هرمون النمو.", "category": "general" },
+  { "q": "ما هو اسم أكبر قمر في النظام الشمسي؟", "a": "قمر غاليليو يوروبا.", "category": "general" },
+  { "q": "ما هو اسم أعمق حفرة في الأرض؟", "a": "حفرة كولا العميقة في روسيا.", "category": "general" },
+  { "q": "من هو أول من اخترع الطائرة؟", "a": "الأخوان رايت.", "category": "general" },
+  { "q": "ما هو المعدن الذي يُستخدم في صناعة النوافذ الزجاجية؟", "a": "السيليكون.", "category": "general" },
+  { "q": "ما هو أسرع مركبة فضائية أُرسلت في مهمة خارج النظام الشمسي؟", "a": "مسبار فيويجر 1.", "category": "general" },
+  { "q": "ما هو أكبر حيوان بحري في العالم؟", "a": "الحوت الأزرق.", "category": "general" },
+  { "q": "ما هي أكبر دولة في العالم من حيث عدد السكان؟", "a": "الصين.", "category": "general" },
+  { "q": "ما هو أكبر قطار كهربائي في العالم؟", "a": "قطار فائق السرعة في الصين.", "category": "general" },
+  // قسم كرة القدم
+  
+  { q: "من هو أكثر فريق فاز بدوري أبطال أوروبا؟", a: "ريال مدريد.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 2019؟", a: "ليفربول.", category: "football" },
+    { q: "من هو الهداف التاريخي لدوري أبطال أوروبا؟", a: "كريستيانو رونالدو.", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري أبطال أوروبا موسم 1999؟", a: "مانشستر يونايتد.", category: "football" },
+    { q: "من هو اللاعب الذي سجل هدفًا في نهائي دوري أبطال أوروبا 2005 بين ليفربول وميلان؟", a: "جيرارد، وكاكا، وآخرون.", category: "football" },
+    { q: "أي نادي فاز بدوري أبطال أوروبا 1985؟", a: "يوفنتوس.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 2011؟", a: "برشلونة.", category: "football" },
+    { q: "ما هي المرة الأولى التي فاز فيها بايرن ميونيخ بدوري أبطال أوروبا؟", a: "1974.", category: "football" },
+    { q: "من هو المدرب الذي قاد ريال مدريد للفوز بدوري أبطال أوروبا 2014؟", a: "كارلو أنشيلوتي.", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري أبطال أوروبا في عام 2004؟", a: "موناكو.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 2018؟", a: "ريال مدريد.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 2004 بعد فوزه على موناكو؟", a: "بورتو.", category: "football" },
+    { q: "من هو اللاعب الذي سجل ثلاثية في نهائي دوري أبطال أوروبا 2018؟", a: "كريستيانو رونالدو.", category: "football" },
+    { q: "ما هي الدولة التي استضافت نهائي دوري أبطال أوروبا 2016؟", a: "إيطاليا (ميلانو).", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري أبطال أوروبا 2007؟", a: "إيه سي ميلان.", category: "football" },
+    { q: "من هو المدرب الذي قاد ليفربول للفوز بدوري أبطال أوروبا 2019؟", a: "يورغن كلوب.", category: "football" },
+    { q: "من هو اللاعب الذي سجل هدف الفوز في نهائي دوري أبطال أوروبا 2012 بين بايرن ميونيخ وتشيلسي؟", a: "دروغبا.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 1998 بعد فوزه على يوفنتوس؟", a: "ريال مدريد.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 2002 بعد فوزه على باير ليفركوزن؟", a: "ريال مدريد.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 2010؟", a: "إنتر ميلان.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 2000؟", a: "ريال مدريد.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 2012؟", a: "تشيلسي.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 1991؟", a: "إيه سي ميلان.", category: "football" },
+    { q: "من هو المدرب الذي قاد برشلونة للفوز بدوري أبطال أوروبا 2009؟", a: "بيب غوارديولا.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 1989؟", a: "إيه سي ميلان.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 1966؟", a: "ليفربول.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا 1981 بعد فوزه على ريال مدريد؟", a: "ليفربول.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا 2006؟", a: "برشلونة.", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال أوروبا موسم 1994؟", a: "إيه سي ميلان.", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال أوروبا موسم 2015؟", a: "برشلونة.", category: "football" },
+    { q: "من هو الفريق الذي فاز بأول نسخة من دوري المؤتمر الأوروبي موسم 2021؟", a: "روما.", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري المؤتمر الأوروبي موسم 2022؟", a: "فينورد روتردام.", category: "football" },
+    { q: "من هو الهداف التاريخي لدوري المؤتمر الأوروبي؟", a: "بوردو من مانشستر يونايتد.", category: "football" },
+    { q: "أي فريق فاز بدوري المؤتمر الأوروبي موسم 2023؟", a: "الإنتر ميلان.", category: "football" },
+    { q: "من هو اللاعب الذي سجل الهدف الأول في تاريخ دوري المؤتمر الأوروبي؟", a: "إدين دجيكو.", category: "football" },
+    { q: "أي فريق شارك لأول مرة في دوري المؤتمر الأوروبي موسم 2021؟", a: "روما.", category: "football" },
+    { q: "من هو الفريق الذي أقيم في ملعبه النهائي لدوري المؤتمر الأوروبي 2022؟", a: "تيرك جيش." , category: "football" },
+    { q: "ما هو الفريق الذي فاز بأول بطولة من دوري المؤتمر الأوروبي للأندية؟", a: "الآرسنال", category: "football" },
+    { q: "من هو الفريق الذي فاز بأكبر عدد من بطولات الدوري الأوروبي؟", a: "إشبيلية", category: "football" },
+    { q: "أي فريق فاز بدوري الأوروبي موسم 2022؟", a: "إينتراخت فرانكفورت", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري الأوروبي موسم 2021؟", a: "مانشستر يونايتد", category: "football" },
+    { q: "أي فريق فاز بدوري الأوروبي موسم 2004 بعد فوزه على موناكو؟", a: "فالنسيا", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري الأوروبي موسم 2010؟", a: "اتلتيكو مدريد", category: "football" },
+    { q: "من هو اللاعب الذي سجل هدف الفوز في نهائي دوري الأوروبي 2019 بين تشيلسي وآرسنال؟", a: "أوليفيه جيرو", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري الأوروبي 2009؟", a: "فالنسيا", category: "football" },
+    { q: "أي فريق فاز بدوري الأوروبي موسم 2015؟", a: "إشبيلية", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري الأوروبي في موسم 2006؟", a: "إشبيلية", category: "football" },
+    { q: "أي فريق فاز بدوري الأوروبي موسم 2013؟", a: "تشيلسي", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا بدوري أبطال إفريقيا؟", a: "الأهلي المصري", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا موسم 2022؟", a: "الوداد الرياضي", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا موسم 2021؟", a: "الأهلي المصري", category: "football" },
+    { q: "من هو الهداف التاريخي لدوري أبطال إفريقيا؟", a: "محمود الخطيب", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا موسم 2019؟", a: "الترجي التونسي", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا 2018؟", a: "الأهلي المصري", category: "football" },
+    { q: "من هو المدرب الذي قاد الأهلي المصري للفوز بدوري أبطال إفريقيا 2020؟", a: "موسيماني", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا موسم 2017؟", a: "الوداد الرياضي", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا موسم 2006؟", a: "الأهلي المصري", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا موسم 2015؟", a: "الوفاق الرياضي", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا موسم 2016؟", a: "الترجي التونسي", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا موسم 2009؟", a: "النجم الساحلي", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا 2014؟", a: "الرجاء الرياضي", category: "football" },
+    { q: "من هو اللاعب الذي سجل هدف الفوز للأهلي في نهائي دوري أبطال إفريقيا 2012؟", a: "محمد أبوتريكة", category: "football" },
+    { q: "من هو الفريق الذي فاز بدوري أبطال إفريقيا 2001؟", a: "الرجاء الرياضي", category: "football" },
+    { q: "من هو المدرب الذي قاد الزمالك للفوز بدوري أبطال إفريقيا 2002؟", a: "جايمي باتشيكو", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا 2010؟", a: "الترجي التونسي", category: "football" },
+    { q: "ما هو الفريق الذي فاز بدوري أبطال إفريقيا موسم 1996؟", a: "الزمالك المصري", category: "football" },
+    { q: "أي فريق فاز بدوري أبطال إفريقيا 2013؟", a: "الأهلي المصري", category: "football" },
+    { q: "من هو اللاعب الذي فاز بلقب أفضل لاعب في نهائي دوري أبطال إفريقيا 2020؟", a: "عمرو السولية", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا في تاريخ الدوري الإنجليزي الممتاز؟", a: "مانشستر يونايتد", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 2022-2023؟", a: "مانشستر سيتي", category: "football" },
+    { q: "من هو الهداف التاريخي للدوري الإنجليزي الممتاز؟", a: "آلن شيرار", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي موسم 2016-2017؟", a: "تشيلسي", category: "football" },
+    { q: "من هو اللاعب الذي فاز بجائزة أفضل لاعب في الدوري الإنجليزي الممتاز موسم 2020-2021؟", a: "كيفين دي بروين", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإنجليزي الممتاز موسم 2018-2019؟", a: "مانشستر سيتي", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 2003-2004؟", a: "آرسنال", category: "football" },
+    { q: "من هو المدرب الذي قاد مانشستر سيتي للفوز بالدوري الإنجليزي الممتاز موسم 2020-2021؟", a: "بيب غوارديولا", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 2013-2014؟", a: "مانشستر سيتي", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإنجليزي الممتاز موسم 2014-2015؟", a: "تشيلسي", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإنجليزي الممتاز موسم 2017-2018؟", a: "مانشستر سيتي", category: "football" },
+    { q: "من هو اللاعب الذي سجل أكثر عدد من الأهداف في موسم واحد من الدوري الإنجليزي الممتاز؟", a: "محمد صلاح", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 2005-2006؟", a: "تشيلسي", category: "football" },
+    { q: "من هو المدرب الذي قاد ليستر سيتي للفوز بالدوري الإنجليزي الممتاز موسم 2015-2016؟", a: "كلود بويل", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإنجليزي الممتاز موسم 1994-1995؟", a: "بلاكبيرن روفرز", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 2011-2012؟", a: "مانشستر سيتي", category: "football" },
+    { q: "من هو المدرب الذي قاد ليفربول للفوز بالدوري الإنجليزي الممتاز موسم 2019-2020؟", a: "يورغن كلوب", category: "football" },
+    { q: "أي فريق فاز بالدوري الإنجليزي الممتاز موسم 1999-2000؟", a: "مانشستر يونايتد", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإنجليزي الممتاز موسم 2010-2011؟", a: "مانشستر يونايتد", category: "football" },
+    { q: "من هو اللاعب الذي فاز بجائزة الهداف في الدوري الإنجليزي الممتاز موسم 2019-2020؟", a: "جيمي فاردي", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا في تاريخ الدوري الإسباني؟", a: "ريال مدريد", category: "football" },
+    { q: "أي فريق فاز بالدوري الإسباني موسم 2022-2023؟", a: "ريال مدريد", category: "football" },
+    { q: "من هو الهداف التاريخي للدوري الإسباني؟", a: "كريستيانو رونالدو", category: "football" },
+    { q: "أي فريق فاز بالدوري الإسباني موسم 2013-2014؟", a: "أتلتيكو مدريد", category: "football" },
+    { q: "من هو المدرب الذي قاد برشلونة للفوز بالدوري الإسباني موسم 2014-2015؟", a: "لويس إنريكي", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإسباني موسم 2008-2009؟", a: "برشلونة", category: "football" },
+    { q: "أي فريق فاز بالدوري الإسباني موسم 2010-2011؟", a: "برشلونة", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإسباني موسم 1995-1996؟", a: "ديبورتيفو لاكورونا", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإسباني موسم 2020-2021؟", a: "أتلتيكو مدريد", category: "football" },
+    { q: "أي فريق فاز بالدوري الإسباني موسم 1990-1991؟", a: "ريال مدريد", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا في تاريخ الدوري الإيطالي؟", a: "يوفنتوس", category: "football" },
+    { q: "أي فريق فاز بالدوري الإيطالي موسم 2022-2023؟", a: "نابولي", category: "football" },
+    { q: "من هو الهداف التاريخي للدوري الإيطالي؟", a: "سيلفيو بيولا", category: "football" },
+    { q: "أي فريق فاز بالدوري الإيطالي موسم 2019-2020؟", a: "يوفنتوس", category: "football" },
+    { q: "من هو المدرب الذي قاد إنتر ميلان للفوز بالدوري الإيطالي 2020-2021؟", a: "أنطونيو كونتي", category: "football" },
+    { q: "أي فريق فاز بالدوري الإيطالي موسم 2017-2018؟", a: "يوفنتوس", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإيطالي موسم 1994-1995؟", a: "إيه سي ميلان", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإيطالي موسم 1997-1998؟", a: "يوفنتوس", category: "football" },
+    { q: "أي فريق فاز بالدوري الإيطالي موسم 2000-2001؟", a: "يوفنتوس", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الإيطالي موسم 2006-2007؟", a: "إيه سي ميلان", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا في تاريخ الدوري الفرنسي؟", a: "باريس سان جيرمان", category: "football" },
+    { q: "أي فريق فاز بالدوري الفرنسي موسم 2022-2023؟", a: "باريس سان جيرمان", category: "football" },
+    { q: "من هو الهداف التاريخي للدوري الفرنسي؟", a: "جون بيير بابان", category: "football" },
+    { q: "أي فريق فاز بالدوري الفرنسي موسم 2019-2020؟", a: "باريس سان جيرمان", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الفرنسي موسم 2007-2008؟", a: "ليون", category: "football" },
+    { q: "أي فريق فاز بالدوري الفرنسي موسم 2017-2018؟", a: "باريس سان جيرمان", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الفرنسي موسم 2013-2014؟", a: "باريس سان جيرمان", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الفرنسي موسم 1993-1994؟", a: "مارسيليا", category: "football" },
+    { q: "أي فريق فاز بالدوري الفرنسي موسم 2003-2004؟", a: "موناكو", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الفرنسي موسم 1997-1998؟", a: "ليون", category: "football" },
+    { q: "من هو الفريق الأكثر فوزًا في تاريخ الدوري الألماني؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "أي فريق فاز بالدوري الألماني موسم 2022-2023؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "من هو الهداف التاريخي للدوري الألماني؟", a: "غيرد مولر", category: "football" },
+    { q: "أي فريق فاز بالدوري الألماني موسم 2019-2020؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الألماني موسم 2009-2010؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "أي فريق فاز بالدوري الألماني موسم 2014-2015؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الألماني موسم 2011-2012؟", a: "بوروسيا دورتموند", category: "football" },
+    { q: "أي فريق فاز بالدوري الألماني موسم 2010-2011؟", a: "بوروسيا دورتموند", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الألماني موسم 2002-2003؟", a: "بايرن ميونيخ", category: "football" },
+    { q: "من هو الفريق الذي فاز بالدوري الألماني موسم 1997-1998؟", a: "بوروسيا دورتموند", category: "football" },
+  
+  // قسم رسم شخصيات
+  { q: "ارسم شخصية؟", a: "عادل إمام", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أحمد زويل", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أم كلثوم", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "محمود عبد العزيز", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "شريهان", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "نجيب محفوظ", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أحمد حلمي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "محمد صلاح", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "سعاد حسني", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "منى زكي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "حسين فهمي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أحمد فؤاد نجم", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "محمود ياسين", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "ليلى مراد", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "حسن حسني", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "يوسف شاهين", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "صباح", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "عادل اللقاني", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "سميرة سعيد", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "عصام الحضري", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أمينة رزق", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "فريد شوقي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "صلاح جاهين", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "عبد الحليم حافظ", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "جمال عبد الناصر", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أنور السادات", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "أحمد مظهر", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "داليا البحيري", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "راغب علامة", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "جورج سيدهم", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "محمود الخطيب", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "عادل إمام", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "بليغ حمدي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "ليلى علوي", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "شيرين عبد الوهاب", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "عمر الشريف", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "دلال عبد العزيز", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "مينا مسعود", category: "drawing" },
+  { q: "ارسم شخصية؟", a: "كارم محمود", category: "drawing" },
+  
+  // قسم كلمة من فيلم
+  { q: "الفلوس مش كل حاجة يا توفيق", a: "السكرية", category: "movies" },
+  { q: "أنا مش خايف من الموت، بس خايف أعيش", a: "إحنا بتوع الأتوبيس", category: "movies" },
+  { q: "الرجالة مفيش منهم فايدة", a: "شقة في وسط البلد", category: "movies" },
+  { q: "مش كل مرة تسلم الجرة", a: "خلي بالك من جيرانك", category: "movies" },
+  { q: "إحنا ما بنحبش نتكلم عن مشاكلنا", a: "فيلم زوجة رجل مهم", category: "movies" },
+  { q: "أنت اللي متجوزني يا حبيبي", a: "أجازة نص السنة", category: "movies" },
+  { q: "اللي اختشوا ماتوا", a: "ليلة ساخنة", category: "movies" },
+  { q: "اللي مش هيتغير مش هينفع", a: "مواطن مصري", category: "movies" },
+  { q: "أنا لما بضحك بشوف الدنيا كلها بتضحك معايا", a: "إسماعيلية رايح جاي", category: "movies" },
+  { q: "عايز تطلع من هنا؟", a: "البرنسيسة", category: "movies" },
+  { q: "في قلب الليل، كل شيء ممكن", a: "الكرنك", category: "movies" },
+  { q: "ماحدش فينا طالع من هنا سليم", a: "طير انت", category: "movies" },
+  { q: "عايشين مع بعض ومتعايشين مع بعض", a: "جاءنا البيان التالي", category: "movies" },
+  { q: "الحياة مش هتكمل كده", a: "إجازة نصف السنة", category: "movies" },
+  { q: "شوفوها يعني شوفوها", a: "ابن حميدو", category: "movies" },
+  { q: "كلنا عندنا مشاكل، بس مش كلنا عندنا حلول", a: "عسل أسود", category: "movies" },
+  { q: "اللي عاش في الظلام مش هيتعود على النور", a: "الظلال", category: "movies" },
+  { q: "الرجالة ماتوا في الحرب، ونستحق نحيا", a: "الحرب والسلام", category: "movies" },
+  { q: "مش هفضل مديون لحد، ولا حتى لحياتي", a: "الحرافيش", category: "movies" },
+  { q: "أنا زعلان على نفسك قبل ما أكون زعلان على حياتي", a: "الجزيرة", category: "movies" },
+  { q: "خدني في حضنك، حاسس إني ضعيف", a: "أين عمري", category: "movies" },
+  { q: "أنا عايش في عالم مليان أكاذيب", a: "الرهينة", category: "movies" },
+  { q: "مفيش حاجة اسمها صدفة", a: "كابوريا", category: "movies" },
+  { q: "يا عالم، دي إيه اللي بيحصل؟", a: "الأزواج الشياطين", category: "movies" },
+  { q: "اللي مش هيسيبنا نعيش، نسيب له المكان", a: "الفيل الأزرق", category: "movies" },
+  { q: "من غيرها، حياتي كانت هتضيع", a: "أصحاب ولا بيزنس", category: "movies" },
+  { q: "اللي بيحبك مش هيسيبك", a: "عمارة يعقوبيان", category: "movies" },
+  { q: "اللي مش قادر يشيل همك، ميبقاش صاحبه", a: "عصابة حمادة وتوتو", category: "movies" },
+  { q: "حياتي كلها كانت وقفة على اللحظة دي", a: "الإرهاب والكباب", category: "movies" },
+  { q: "خلاص، مش عايز أعيش في الخوف ده", a: "الحرب العالمية الثالثة", category: "movies" },
+  { q: "أنت مش لوحدك، كلنا معاك", a: "فيلم رعب", category: "movies" },
+  { q: "ما هو مش كل حاجة هتبقى مظبوطة", a: "السفارة في العمارة", category: "movies" },
+  { q: "عليهم اللعنة", a: "خارج عن القانون", category: "movies" },
+  { q: "حاجة تكسف، إن كل الناس تعرف عني أكتر مني", a: "عايشين في الحي", category: "movies" },
+  { q: "محدش فينا هيموت هنا", a: "واحد من الناس", category: "movies" },
+  { q: "بتحبني ولا لأ؟", a: "سهر الليالي", category: "movies" },
+  { q: "أنا لما بضحك بشوف الدنيا كلها بتضحك معايا", a: "إسماعيلية رايح جاي", category: "movies" },
+  { q: "أنا زعلان على نفسك قبل ما أكون زعلان على حياتي", a: "الجزيرة", category: "movies" },
+  { q: "إحنا ما بنحبش نتكلم عن مشاكلنا", a: "فيلم زوجة رجل مهم", category: "movies" },
+  
+  
+  
+  // قسم كمل الأغنية
+  { q: "عايز اغنية للفنان", a: "اسلام كابونجا", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "أم كلثوم", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "عبد الحليم حافظ", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "عمرو دياب", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "تامر حسني", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "شيرين عبد الوهاب", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "محمد عبد الوهاب", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "وردة الجزائرية", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "أصالة نصري", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "نجاة الصغيرة", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "ماجدة الرومي", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "فايزة أحمد", "category": "songs" },
+{ q: "عايز اغنية للفنان", a: "سيد درويش", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "إليسا", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "حسين الجسمي", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "وائل كفوري", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "راغب علامة", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "لطيفة", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "الفنانة نانسي عجرم", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "صابر الرباعي", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "عادل إمام", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "جورج وسوف", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "أمال ماهر", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "كاظم الساهر", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "حماقي", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "مروان خوري", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "أمينة", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "فارس كرم", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "ديانا حداد", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "كارول سماحة", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "حسين السلمان", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "محمود العسيلي", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "أصالة نصري", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "سعد لمجرد", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "سميرة سعيد", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "نانسي عجرم", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "تامر حسني", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "محمد حماقي", "category": "songs" },
+{ "q": "عايز اغنية للفنان", "a": "شيرين عبد الوهاب", "category": "songs" },
+
+
+];
+
+    let currentQuestions = [...questions];
+    let currentIndex = 0;
+
+    function showQuestion(index) {
+      const questionElement = document.getElementById('question');
+      const answerElement = document.getElementById('answer');
+
+      if (index >= 0 && index < currentQuestions.length) {
+        questionElement.textContent = currentQuestions[index].q;
+        answerElement.textContent = currentQuestions[index].a;
+      } else {
+        questionElement.textContent = "لا توجد أسئلة متاحة في هذه الفئة";
+        answerElement.textContent = "";
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        showQuestion(currentIndex);
+      } else {
+        currentIndex = 0;
+        showQuestion(currentIndex);
+      }
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showQuestion(currentIndex);
+      } else {
+        currentIndex = currentQuestions.length - 1;
+        showQuestion(currentIndex);
+      }
+    }
+
+    function filterQuestions(category) {
+      // إزالة التنشيط من جميع الأزرار
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // تنشيط الزر المحدد
+      event.target.classList.add('active');
+      
+      if (category === 'all') {
+        currentQuestions = [...questions];
+      } else {
+        currentQuestions = questions.filter(q => q.category === category);
+      }
+      
+      currentIndex = 0;
+      showQuestion(currentIndex);
+    }
+
+    // عرض أول سؤال عند تحميل الصفحة
+    showQuestion(currentIndex);
+
+    function changeScore(player, increment) {
+      var scoreElement = document.getElementById("score" + player);
+      var score = parseInt(scoreElement.textContent);
+
+      // تعديل النتيجة للسماح بالنزول للسالب
+      score += increment;
+
+      // عرض النتيجة الجديدة
+      scoreElement.textContent = score;
+
+      // التحقق من فوز اللاعب
+      if (score >= 10) {
+        // إظهار رسالة الفائز
+        document.getElementById("winnerMessage").textContent = "لقد فاز " + document.getElementById("player" + player).value + "!";
+        document.getElementById("winnerMessage").style.display = "block";
+
+        // إعادة تعيين النقاط بعد 10 ثوانٍ
+        setTimeout(function() {
+          resetGame();
+        }, 2000); // 10000 ميلي ثانية = 10 ثواني
+      }
+    }
+
+    function updateName(input, player) {
+      var playerName = input.value;
+      // يمكن إضافة وظائف إضافية هنا إذا أردت
+    }
+
+    // دالة لإعادة تعيين اللعبة
+    function resetGame() {
+      // إعادة تعيين النقاط إلى صفر
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById("score" + i).textContent = "0";
+      }
+
+      // إخفاء رسالة الفائز
+      document.getElementById("winnerMessage").style.display = "none";
+    }
+    // دالة لخلط المصفوفة عشوائيًا
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+function filterQuestions(category) {
+  // إزالة التنشيط من جميع الأزرار
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // تنشيط الزر المحدد
+  event.target.classList.add('active');
+  
+  if (category === 'all') {
+    currentQuestions = shuffleArray([...questions]);
+  } else {
+    currentQuestions = shuffleArray(questions.filter(q => q.category === category));
+  }
+  
+  currentIndex = 0;
+  showQuestion(currentIndex);
+}
+// عرض أول سؤال عند تحميل الصفحة بعد خلط الأسئلة
+currentQuestions = shuffleArray([...questions]);
+showQuestion(currentIndex);
+  </script>
+
+</body>
+</html>
