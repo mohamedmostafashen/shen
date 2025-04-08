@@ -12,7 +12,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      background-color: #002366;
+      background-color: url('https://i.postimg.cc/tsR0S0Pp/De-Watermark-ai-1744105890997.png');
+      background-image: url('https://i.postimg.cc/tsR0S0Pp/De-Watermark-ai-1744105890997.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: white;
       text-align: center;
       direction: rtl;
@@ -25,9 +29,11 @@
       margin: 20px auto;
     }
     .question-box {
+      border: 2px solid #ffffff;
+
       margin: 30px auto;
       padding: 20px;
-      background-color: #003399;
+      background-color: #1c1c1c;
       border-radius: 15px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.5);
       max-width: 800px;
@@ -56,7 +62,7 @@
       border-radius: 15px;
       padding: 20px;
       margin: 10px;
-      background-color: #003399;
+      background-color: #1c1c1c;
       box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
     .score {
@@ -125,39 +131,68 @@
     }
     #winnerMessage {
   position: fixed;
-  top: 20%;  /* قمنا بتعديل الـ top لتكون أعلى قليلاً عن المنتصف */
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%); /* لضمان التمركز التام أفقيًا */
-  background: #002366; /* نفس لون خلفية الموقع */
+  transform: translate(-50%, -50%); /* تعديل هنا لضبط المركز تماما */
+  background: #1c1c1c;
   color: gold;
-  font-size: 32px; /* تصغير الحجم ليكون مناسبًا مع العناصر الأخرى */
-  padding: 20px 40px; /* إضافة بعض المسافة حول النص */
-  border-radius: 15px; /* لتنعيم الحواف */
-  z-index: 9999; /* وضع الرسالة فوق كل العناصر الأخرى */
-  display: none; /* إخفاء الرسالة بشكل افتراضي */
+  font-size: 120px; /* زيادة حجم الخط */
+  padding: 30px 80px; /* زيادة الحشو */
+  border-radius: 50px; /* زوايا أكثر استدارة */
+  z-index: 9999;
+  display: none;
   text-align: center;
-  pointer-events: none; /* تعطيل التفاعل مع العناصر الأخرى */
+  pointer-events: none;
+  border: 5px solid #ffd700; /* إطار ذهبي سميك */
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.7); /* تأثير إضاءة ذهبية */
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8); /* ظل للنص */
+  width: 80%; /* عرض كبير */
+  max-width: 1200px; /* أقصى عرض */
+  min-width: 800px; /* أدنى عرض */
+  animation: pulse 2s infinite; /* تأثير نبض */
+  font-family: 'Oi', cursive; /* خط مميز */
+  letter-spacing: 5px; /* تباعد بين الحروف */
 }
 
 #winnerMessage.active {
-  display: block; /* إظهار الرسالة عند تفعيلها */
-  pointer-events: all; /* تفعيل التفاعل مع الرسالة فقط */
+  display: block;
+  pointer-events: all;
 }
 
+/* تأثير النبض */
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* تعديل للشاشات الصغيرة */
+@media (max-width: 768px) {
+  #winnerMessage {
+    font-size: 60px;
+    padding: 20px 40px;
+    min-width: 90%;
+    width: 90%;
+  }
+}
 .category-selector {
+  border: 2px solid #ffffff;
+
   margin: 15px auto;
   padding: 10px;
-  background-color: #003399;
+  background-color: #1c1c1c;
   border-radius: 10px;
   max-width: 800px;
 }
 
 .category-btn {
+  border: 2px solid #ffffff;
+
   margin: 5px;
   font-size: 16px;
   padding: 8px 15px;
   background-color: #ffd700;
-  color: #002366;
+  color: #1c1c1c;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -284,6 +319,7 @@
 }
 
   </style>
+  
 </head>
 <body>
 
@@ -865,7 +901,7 @@ const questions = [
         // إعادة تعيين النقاط بعد 10 ثوانٍ
         setTimeout(function() {
           resetGame();
-        }, 2000); // 10000 ميلي ثانية = 10 ثواني
+        }, 5000); // 10000 ميلي ثانية = 10 ثواني
       }
     }
 
@@ -914,6 +950,16 @@ function filterQuestions(category) {
 currentQuestions = shuffleArray([...questions]);
 showQuestion(currentIndex);
   </script>
+ <div style="text-align: center; padding: 20px; font-size: 18px; color: white; margin-top: 30px;">
+  تمت برمجة هذا الموقع بواسطة 
+  <a href="https://www.facebook.com/SHORTS1911" 
+     style="color: rgb(255, 255, 255); text-decoration: none; font-weight: bold; transition: color 0.3s ease, transform 0.3s ease;"
+     onmouseover="this.style.color='#00ff00'; this.style.transform='scale(1.1)';" 
+     onmouseout="this.style.color='white'; this.style.transform='scale(1)';">
+    محمد مصطفى
+  </a>
+</div>
+
 
 </body>
 </html>
